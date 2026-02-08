@@ -94,6 +94,10 @@ In case of conflict, the current branch is rejected and the solver backtracks.
 | ---------------------------------------------------------------------------------------------------------- | ----------- |
 | `A ∨ ¬A`                                                                                                   | SAT         |
 | `p ∧ ¬p`                                                                                                   | UNSAT       |
+| `(p ∨ q) ∧ ¬p ∧ ¬q`                                                                                        | UNSAT       |
+| `¬(p ∨ ¬p)`                                                                                                | UNSAT       |
+| `(p ⇒ q) ∧ p ∧ ¬q`                                                                                         | UNSAT       |
+| `(p ⇔ q) ∧ p ∧ ¬q`                                                                                         | UNSAT       |
 | `A ⇒ B`                                                                                                    | SAT         |
 | `(X ∧ Y) ⇒ X`                                                                                              | SAT         |
 | `(¬p ⇒ q) ⇔ (p ∨ q)`                                                                                       | SAT         |

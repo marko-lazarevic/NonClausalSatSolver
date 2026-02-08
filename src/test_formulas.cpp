@@ -98,6 +98,10 @@ void test_formulas() {
 
 	tests.push_back({"A or not A", new Or(v("A"), new Not(v("A"))), true});
 	tests.push_back({"p and not p", new And(v("p"), new Not(v("p"))), false});
+	tests.push_back({"(p or q) and not p and not q", new And(new And(new Or(v("p"), v("q")), new Not(v("p"))), new Not(v("q"))), false});
+	tests.push_back({"not (p or not p)", new Not(new Or(v("p"), new Not(v("p")))), false});
+	tests.push_back({"(p => q) and p and not q", new And(new And(new Implies(v("p"), v("q")), v("p")), new Not(v("q"))), false});
+	tests.push_back({"(p <=> q) and p and not q", new And(new And(new Eq(v("p"), v("q")), v("p")), new Not(v("q"))), false});
 	tests.push_back({"A implies B", new Implies(v("A"), v("B")), true});
 	tests.push_back({"(X and Y) implies X", new Implies(new And(v("X"), v("Y")), v("X")), true});
 	tests.push_back({"(not p => q) <=> (p or q)", new Eq(new Implies(new Not(v("p")), v("q")), new Or(v("p"), v("q"))), true});
