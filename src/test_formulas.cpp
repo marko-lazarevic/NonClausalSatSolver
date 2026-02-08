@@ -188,6 +188,40 @@ void test_formulas() {
 		),
 		true});
 
+	tests.push_back({"((p and q) => r) and ((p and q) => s) and ((p and q) => t) and (p and q)",
+		and_all({
+			new Implies(new And(v("p"), v("q")), v("r")),
+			new Implies(new And(v("p"), v("q")), v("s")),
+			new Implies(new And(v("p"), v("q")), v("t")),
+			new And(v("p"), v("q"))
+		}),
+		true});
+
+	tests.push_back({"(a => b) and (b => c) and (c => d) and (d => e) and (e => not a) and a",
+		and_all({
+			new Implies(v("a"), v("b")),
+			new Implies(v("b"), v("c")),
+			new Implies(v("c"), v("d")),
+			new Implies(v("d"), v("e")),
+			new Implies(v("e"), new Not(v("a"))),
+			v("a")
+		}),
+		false});
+
+	auto triple = [](){ return new And(new And(v("x1"), v("x2")), v("x3")); };
+	Formula* repeated_triple = new Or(new Or(new Or(new Or(triple(), triple()), triple()), triple()), triple());
+	tests.push_back({"(x1 and x2 and x3) repeated disjunction", repeated_triple, true});
+
+	tests.push_back({"(p or q) and (p or r) and (p or s) and (p or t) and not p",
+		and_all({
+			new Or(v("p"), v("q")),
+			new Or(v("p"), v("r")),
+			new Or(v("p"), v("s")),
+			new Or(v("p"), v("t")),
+			new Not(v("p"))
+		}),
+		true});
+
 
 	int tt_correct = 0;
 	int tt_incorrect = 0;

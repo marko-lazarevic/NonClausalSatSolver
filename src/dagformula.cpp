@@ -342,6 +342,20 @@ bool DAGNode::propagate_parents(TruthValue new_value, int level) {
                         return false;
                     }
                 }
+
+                // If the implication is already TRUE, push consequences when children change (forward + contrapositive).
+                if(parent->truth_value == TruthValue::TRUE){
+                    if(a->truth_value == TruthValue::TRUE){
+                        if(!b->label(TruthValue::TRUE, level+1, TruthValueChangeReason::TRIGGER)){
+                            return false;
+                        }
+                    }
+                    if(b->truth_value == TruthValue::FALSE){
+                        if(!a->label(TruthValue::FALSE, level+1, TruthValueChangeReason::TRIGGER)){
+                            return false;
+                        }
+                    }
+                }
             }
             break;
 
