@@ -65,6 +65,18 @@ bool And::solve(const Valuation& valuation) const {
     return left->solve(valuation) && right->solve(valuation);
 }
 
+std::string And::signature() const {
+    auto left_sig = left->signature();
+    auto right_sig = right->signature();
+
+    //in order to have a unique signature for logically equivalent formulas, 
+    //we sort the signatures of the left and right subformulas
+    if(left_sig < right_sig){
+        return "AND(" + left_sig + "," + right_sig + ")";
+    }
+    return "AND(" + right_sig + "," + left_sig + ")";
+}
+
 Or::Or(Formula* l, Formula* r) : BinaryOp(l, r, '|') {}
 
 void Or::print() const {
@@ -77,6 +89,18 @@ void Or::print() const {
 
 bool Or::solve(const Valuation& valuation) const {
     return left->solve(valuation) || right->solve(valuation);
+}
+
+std::string Or::signature() const {
+    auto left_sig = left->signature();
+    auto right_sig = right->signature();
+
+    //in order to have a unique signature for logically equivalent formulas, 
+    //we sort the signatures of the left and right subformulas
+    if(left_sig < right_sig){
+        return "OR(" + left_sig + "," + right_sig + ")";
+    }
+    return "OR(" + right_sig + "," + left_sig + ")";
 }
 
 Implies::Implies(Formula* l, Formula* r) : BinaryOp(l, r, '>') {}
@@ -93,6 +117,10 @@ bool Implies::solve(const Valuation& valuation) const {
     return !left->solve(valuation) || right->solve(valuation);
 }
 
+std::string Implies::signature() const {
+    return "IMP(" + left->signature() + "," + right->signature() + ")";
+}
+
 Eq::Eq(Formula* l, Formula* r) : BinaryOp(l, r, '=') {}
 
 void Eq::print() const {
@@ -105,5 +133,17 @@ void Eq::print() const {
 
 bool Eq::solve(const Valuation& valuation) const {
     return left->solve(valuation) == right->solve(valuation);
+}
+
+std::string Eq::signature() const {
+    auto left_sig = left->signature();
+    auto right_sig = right->signature();
+
+    //in order to have a unique signature for logically equivalent formulas, 
+    //we sort the signatures of the left and right subformulas
+    if(left_sig < right_sig){
+        return "EQ(" + left_sig + "," + right_sig + ")";
+    }
+    return "EQ(" + right_sig + "," + left_sig + ")";
 }
 

@@ -1,18 +1,20 @@
 #ifndef __FORMULA__
 #define __FORMULA__
 #include <unordered_map>
+#include <map>
 #include <string>
 #include <iostream>
 #include <set>
 #include <algorithm>
 
-using Valuation = std::unordered_map<std::string, bool>;
+using Valuation = std::map<std::string, bool>;
 
 struct Formula {
     virtual ~Formula() = default;
     virtual void print() const = 0;
     virtual bool solve(const Valuation& valuation) const = 0;
     virtual std::set<std::string> get_vars() const = 0;
+    virtual std::string signature() const = 0;
 };
 
 struct Variable : Formula {
@@ -21,6 +23,9 @@ struct Variable : Formula {
     void print() const override;
     bool solve(const Valuation& valuation) const override;
     std::set<std::string> get_vars() const override;
+    std::string signature() const override {
+        return name;
+    }
 };
 
 struct Not : Formula {
@@ -32,6 +37,9 @@ struct Not : Formula {
     void print() const override;
     bool solve(const Valuation& valuation) const override;
     std::set<std::string> get_vars() const override;
+    std::string signature() const override {
+        return "NOT(" + operand->signature() + ")";
+    }
 };
 
 struct BinaryOp : Formula {
@@ -49,6 +57,7 @@ struct And : BinaryOp {
 
     void print() const override;
     bool solve(const Valuation& valuation) const override;
+    std::string signature() const override;
 };
 
 struct Or : BinaryOp {
@@ -56,6 +65,7 @@ struct Or : BinaryOp {
 
     void print() const override;
     bool solve(const Valuation& valuation) const override;
+    std::string signature() const override;
 };
 
 struct Implies : BinaryOp {
@@ -63,6 +73,7 @@ struct Implies : BinaryOp {
 
     void print() const override;
     bool solve(const Valuation& valuation) const override;
+    std::string signature() const override;
 };
 
 struct Eq : BinaryOp {
@@ -70,10 +81,7 @@ struct Eq : BinaryOp {
 
     void print() const override;
     bool solve(const Valuation& valuation) const override;
+    std::string signature() const override;
 };
-
-
-
-
 
 #endif
