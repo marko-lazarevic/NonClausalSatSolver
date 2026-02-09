@@ -4,7 +4,7 @@
 
 Author: Marko Lazarević
 
-Main goal of this work is to implement a basic SAT solver that will work with formulas in canonical form rather than CNF which is widely adopted among all industry-standard SAT solvers.
+Main goal of this work is to implement a basic SAT solver that will work with formulas in general form rather than CNF which is widely adopted among all industry-standard SAT solvers.
 
 ## SAT problem
 
