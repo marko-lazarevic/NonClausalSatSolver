@@ -1,0 +1,21 @@
+%option noyywrap
+
+%{
+#include "fol.hpp"
+#include "parser.hpp"
+%}
+
+%%
+
+[a-z][a-zA-Z_0-9]*       yylval.str_attr = new std::string(yytext); return SYMBOL;
+\(                       return *yytext;
+\)                       return *yytext;
+&                        return AND;
+\|			 return OR;
+=\>                      return IMP;
+\<=\>                    return IFF;
+~			 return NOT;
+;                        return *yytext;
+[ \t\n]
+
+%%

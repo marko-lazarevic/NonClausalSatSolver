@@ -6,6 +6,52 @@ Author: Marko Lazarević
 
 Main goal of this work is to implement a basic SAT solver that will work with formulas in general form rather than CNF which is widely adopted among all industry-standard SAT solvers.
 
+## Requirements
+
+The following tools must be installed to build and run the project:
+
+- **g++** (with C++17 support)
+- **make**
+- **bison** (parser generator)
+- **flex** (lexer generator)
+
+On Ubuntu/Debian-based systems, install them with:
+
+```bash
+sudo apt-get install g++ make bison flex
+```
+
+On macOS with Homebrew:
+
+```bash
+brew install gcc make bison flex
+```
+
+## Building and running
+
+```bash
+cd src
+make
+./a.out
+```
+
+Use flag `-t` to run a set of test formulas.
+
+Without arguments, the program reads a propositional logic formula from stdin. Formulas must end with a semicolon (`;`).
+
+**Formula syntax:**
+
+- Variables: lowercase letters followed by alphanumeric characters (e.g., `p`, `q`, `var1`)
+- Operators: `~` (NOT), `&` (AND), `|` (OR), `=>` (IMPLIES), `<=>` (EQUIVALENCE)
+- Parentheses for grouping: `(` and `)`
+
+**Example usage:**
+
+```bash
+echo "p & q;" | ./a.out
+echo "(~p => q) <=> (p | q);" | ./a.out
+```
+
 ## SAT problem
 
 In logic and computer science, the Boolean satisfiability problem (sometimes called propositional satisfiability problem and abbreviated SATISFIABILITY, SAT or B-SAT) asks whether there exists an interpretation that satisfies a given Boolean formula. In other words, it asks whether the formula's variables can be consistently replaced by the values TRUE or FALSE to make the formula evaluate to TRUE. If this is the case, the formula is called satisfiable, else unsatisfiable. For example, the formula "a AND NOT b" is satisfiable because one can find the values a = TRUE and b = FALSE, which make (a AND NOT b) = TRUE. In contrast, "a AND NOT a" is unsatisfiable.

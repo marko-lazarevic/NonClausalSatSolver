@@ -1,0 +1,123 @@
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+
+int yylex();
+
+void yyerror(const char* msg) {
+    printf("Parse error: %s\n", msg);
+    exit(1);
+}
+
+#include "../formula.hpp"
+#include "fol.hpp"
+
+using std::string;
+
+%}
+
+%token<str_attr> SYMBOL;
+%token NOT;
+%token AND;
+%token OR;
+%token IMP;
+%token IFF;
+
+%type<formula_attr> formula
+%type<formula_attr> iff_formula
+%type<formula_attr> imp_formula
+%type<formula_attr> or_formula
+%type<formula_attr> and_formula
+%type<formula_attr> unary_formula
+%type<formula_attr> sub_formula
+%type<formula_attr> atomic_formula
+
+%union {
+  std::string * str_attr;
+  ::Formula * formula_attr;
+}
+
+%%
+
+input  : formula ';'
+       {
+         parsed_formula = $1;
+	 return 0;
+       }
+       ;
+
+formula : iff_formula
+	{
+	 $$ = $1;
+	}
+	;
+iff_formula : imp_formula IFF iff_formula
+  	{
+	  $$ = new ::Eq($1, $3);
+	}
+	| imp_formula
+	{
+	  $$ = $1;
+	}
+	;
+
+imp_formula : or_formula IMP imp_formula
+	    {
+	      $$ = new ::Implies($1, $3);
+	    }
+	    | or_formula
+	    {
+	      $$ = $1;
+	    }
+	    ;
+
+or_formula : or_formula OR and_formula
+	   {
+	     $$ = new ::Or($1, $3);
+	   }
+	   | and_formula
+	   {
+	     $$ = $1;
+	   }
+	   ;
+
+and_formula : and_formula AND unary_formula
+	    {
+	      $$ = new ::And($1, $3);
+	    }
+	    | unary_formula
+	    {
+	      $$ = $1;
+	    }
+	    ;
+
+unary_formula : NOT unary_formula
+	      {
+	       $$ = new ::Not($2);
+	      }
+	      | sub_formula
+	      {
+	       $$ = $1;
+	      }
+	      ;
+
+sub_formula : atomic_formula
+	    {
+	      $$ = $1;
+	    } 
+	    | '(' formula ')'
+	    {
+	      $$ = $2;
+	    }
+	    ;
+
+atomic_formula : SYMBOL
+	       {
+	         $$ = new ::Variable(*$1);
+	         delete $1;
+	       }
+	       ;
+
+%%
